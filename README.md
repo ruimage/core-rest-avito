@@ -1,76 +1,63 @@
-# Craigslist Jr
+# Avito - собственная версия
 
-## Learning Competencies
+## Изучение области компетенции
 
-* Build a wireframe to model application views
-* Use Active Record Associations
-* Implement all four parts of [CRUD][]: create, read, update, and delete.
-* Use the MVC pattern in web applications with proper allocation of code and responsibilities to each layer
+* Создайте макет, чтобы смоделировать представления(views) приложения
+* Используйте Sequelize Associations
+* Выполните все четыре части [CRUD][]: создавать, читать, обновлять и удалять. 
+* Используйте шаблон MVC в веб-приложении с правильным распределением кода и обязанностей для каждого уровня 
 
-## Summary
+## Общие сведения
 
-We're going to build a simple version of Craigslist.  This will be your first
-web application that uses multiple models.
+Мы создадим простую версию Avito. Это будет веб-приложение, использующее несколько моделей. 
 
-Keep in mind that this is not substantially different than a command-line
-version.  Instead of reading in command-line arguments, we read in URL
-parameters.  Instead of printing to the console, we print HTML and CSS.
+Веб-версия приложений не очень сильно отличается от версии командной строки с точки зрения логики. Вместо того, чтобы читать в аргументах командной строки, мы читаем в параметрах URL. Вместо печати на консоль, мы печатаем в HTML и CSS.
 
-We'll only have two models in a one-to-many relationship; no different than
-your command-line TODO app.
+У нас будет только две модели, использующие связь «один-ко-многим». 
 
-The challenge repo includes a Sinatra skeleton as usual.
+Репозиторий уже включает в себя основную структуру проекта на Sequelize + Express.
+
 
 ## Releases
 
-### Release 0: Wireframe With Your Pair
+### Release 0: Макет с вашей парой
 
-Never heard of a web wireframe? Check out [what Wikipedia has to
-say][wireframe]. **TL;DR** -- figure out what *pages* your app needs, then
-sketch-out the basic *layout* of each and the *connections* between them.
+Никогда не слышали о веб-макете? Проверьте [wireframe][wireframe]. Выясните, какие *страницы* нужны для вашего приложения, а затем набросайте основную *разметку* каждой страницы и *связи* между ними.
 
-The application will have two core models: `Article` and `Category`.  An `Article`
-belongs to a `Category` and a `Category` has many `Articles`.
+У приложения будет две основные модели `Article` и `Category`.  `Article` принадлежит к `Category`, а в `Category` есть много `Articles`.
 
-A `Category` is something like "Apartment Rentals" or "Auto Parts."
+`Category` - это что-то вроде "Аренда квартиры" или "Автозапчасти"
 
-Sit down and work out with your pair what pages you're going to be building.
-At a minimum, you'll need:
+Сядьте и поработайте с вашей парой над тем, какие страницы вы собираетесь создать.
+Как минимум, вам понадобятся:
 
-1. A page that lists all the categories
-2. A page that lists all the articles in a given category
-3. A page that lets someone create a new article in a given category
-4. A page that lets someone who has created a page return to edit/update the page
+1. Страница, в которой перечислены все категории
+2. Страница, в которой перечислены все статьи данной категории
+3. Страница, которая позволяет кому-то создать новую статью в данной категории
+4. Страница, которая позволяет кому-то, кто создал страницу, вернуться к редактированию/обновлению страницы
 
-If you're never used Craigslist, it doesn't have any kind of user
-authentication.  Instead, when someone creates an article they're given a special
-"secret" URL that grants them powers to edit that article that looks like
+Мы не будем использовать аутентификацию пользователей. Вместо этого, когда кто-то создает статью, ему/ей будет предоставляться специальный «секретный» URL-адрес, который предоставляет ему/ей полномочия для редактирования такой статьи. URL-адрес редактирования статьи должен выглядеть примерно так:
 
 ```text
-http://craigslist.com/articles/123/edit?key=kjansd812
+http://localhost:3000/articles/123/edit?key=klidp219
 ```
 
-The key is randomly generated.  The person is given their "edit URL" after they
-successfully create a article.  Anyone with this URL can edit the article.
+Ключ генерируется случайным образом. Пользователь получает свой "edit URL" (URL-адрес для правки) после того, как он/она успешно создали статью. Любой, у кого есть этот URL, может редактировать статью. 
 
-Think about this like a real web application you might want someone to use.
-What fields should an `Article` have?
+Подумайте об этом, как о реальном веб-приложении, которое вы хотели бы использовать.
+Какие поля должна иметь `Article`?
 
-A price, probably.  What should the column type of a money-related column be?
+Цены? Будете ли вы их указывать? Каким должен быть тип столбца, связанного с деньгами?
 
-An email, so the author of the article could be contacted.  Title, description, etc.
+Электронная почта, по которой можно будет связаться с автором статьи. Название, описание и т.д.
 
-Spend time enumerating the pages, deciding what should be displayed on each
-one.
+Потратьте время на нумерацию страниц, определяя, что должно отображаться на каждой из них. 
 
-### Release 1: Implement Controller Structure
+### Release 1: Создайте структуру контроллера
 
-Our controller structure will be more complicated.  We'll want URLs that look
-like `/categories/123` and `/articles/456`.  We'll be using both `get` and `post`
-methods.
+Наша структура контроллера будет не такой простой как раньше. Нам понадобятся URL-адреса, которые выглядят как `/categories/123` и `/articles/456`. Мы будем использовать методы `get` и` post`.
 
-To create a new `Article`, for example, we'd want to submit an HTML form using the
-POST http method to the `/articles` URL, like so:
+Например, для создания новой `Article`, мы хотели бы отправить HTML-форму, используя http-метод POST, в URL `/articles`, например:
 
 ```html
 <form action="/articles" method="post">
@@ -78,125 +65,95 @@ POST http method to the `/articles` URL, like so:
 </form>
 ```
 
-and to update an existing record (say with id `1234`) we'd want to post to
-`/articles/1234`.
+и чтобы обновить существующую запись (например, с id `1234`), мы хотели бы отправить запрос по адресу `/articles/1234`.
 
-Controllers should either redirect to another URL or render a page.  Typically,
-a page loaded via HTTP POST will redirect to an appropriate URL if a request
-succeeds and render an error page, otherwise.
 
-#### Organization
+Контроллеры должны либо перенаправлять на другой URL-адрес, либо визуализировать страницу. Как правило, страница, загруженная через HTTP POST, перенаправит на соответствующий URL-адрес, если запрос выполнен успешно, в противном случае появляется страница ошибки.
 
-Keeping your code organized is an important part of any software project. Most
-important is following a convention, this way a new member of your team won't
-spend days trying to get their bearings.
+#### Организация
 
-Developers might disagree on _which_ convention to follow, but they'll all
-agree any convention is better than none.
+Содержание вашего кода в организованном порядке является важной частью любого программного проекта. Наиболее важно следовать условным обозначениям, таким образом, новому члену вашей команды не нужно будет тратить дни на то, чтобы понять его детали.
 
-In this app you'll have both `Article` and `Category` models. The ActiveRecord
-convention is for those to be described in different files:
+
+Разработчики могут не прийти к согласию в отношении того, каким соглашениям (об организации структуры кода) нужно следовать, но все согласятся, что какое-либо из соглашений лучше, чем ни одного. 
+
+В этом приложении у вас будут модели `Article` и `Category`. Мы будем описывать их в разных файлах:
+
 
 ```text
-app
-| - models
-  | - article.rb
-  | - category.rb
+models
+  | - article.js
+  | - category.js
 ```
 
-Why not do the same for your controllers? You could have one controller per
-model! Each controller would handle all the requests (CRUD) for each that
-model. E.g.:
+Почему бы не сделать то же самое для ваших контроллеров? У вас может быть по одному контроллеру на каждую модель! Каждый контроллер будет обрабатывать все запросы (CRUD) для каждой из этих моделей. Например.:
 
 
 ```text
-app
-| - controllers
-  | - article.rb
-  | - category.rb
-  | - index.rb
+routes
+  | - article.js
+  | - category.js
+  | - index.js
 ```
 
-You might keep `index.rb` around for requests that aren't for a `Category` or
-`Article`. Your `/` landing page would be a good fit for `index.rb`
+Вы можете держать `index.js` для запросов, которые не относятся к `Category` или к `Article`. Ваша корневая страница `/`, куда ведет ссылка, хорошо подходит для `index.js`
 
-The same organizational technique can be applied to your erb views. Instead of
-filling up your `app/views` directory with a half dozen erb templates:
+Такой же организационный метод может быть применен к вашим представлениям hbs. Вместо заполнения вашего каталога `views` полдюжиной шаблонов hbs:
 
 ```text
-app
-| - views
-  | - category_index.erb
-  | - category_show.erb
-  | - edit_article.erb
-  | - new_article.erb
-  | - article_show.erb
-  | - articles_index.erb
+views
+  | - category_index.hbs
+  | - category_show.hbs
+  | - edit_article.hbs
+  | - new_article.hbs
+  | - article_show.hbs
+  | - articles_index.hbs
 ```
 
-Why not create an `articles` and a `categories` sub-directory?
+Почему бы не создать подкаталог `articles` и `categories`?
 
-```text
-app
-| - views
+```
+views
   | - articles
-    | - edit.erb
-    | - new.erb
-    | - show.erb
-    | - index.erb
+    | - edit.hbs
+    | - new.hbs
+    | - show.hbs
+    | - index.hbs
   | - categories
-    | - index.erb
-    | - show.erb
+    | - index.hbs
+    | - show.hbs
 ```
 
-Now with the sub-directories `articles` and `categories` our erb template names
-follow a convention. Neat! One tip, you'll need to use some (ahem) interesting
-syntax to render a template inside a sub-directory. Here's an example:
+Теперь с подкаталогами `articles` и `categories` наши имена шаблонов hbs соответствует нашему соглашению об организации кода. Здорово!
 
-```ruby
-get "/articles" do
-  @articles = Article.all
 
-  erb :"articles/index"
-end
-```
+### Запускайте!
 
-### Ship it!
+Убедитесь, что основные функции работают. У нас должна быть возможность загрузить ваше приложение, запустить его и выполнить следующие действия:
 
-Make sure the core features work.  We should be able to download your app, run
-it, and do the following:
+1. Выбрать категорию для просмотра
+2. Просмотреть все статьи в определенной категории
+3. Просмотреть конкретную статью
+4. Создать свою собственную статью
+5. Редактировать свои статьи, используя «секретный ключ», который мы получим после создания своих статей 
 
-1. Choose a category to browse
-2. View all articles in a particular category
-3. View a particular article
-4. Create my own article
-5. Edit my articles by using the "secret key" that I get after creating my articles
+Когда мы говорим «загрузите приложение», мы имеем в виду «найдите его на сайте, установите тем или иным образом, запустите миграции и запустите сервер». Представьте, что вы показываете это замечательное приложение своему боссу или коллеге, которые помогут вам, если они смогут его запустить и попробовать в работе. Хороший разработчик обеспечивает легкие загрузку и запуск своих приложений. Не тратить время других людей впустую - это хорошее качество.
 
-When we say "download your app" we mean "check it out from source, run the
-migrations, and start up the server."  Imagine you're showing this great idea
-off to your boss or a colleage who will help you if they can get it up and
-running.  How might you make sure that *they* are effective with only a basic
-knowledge of the DBCstarter kit?  A good developer makes it easy to get up and
-running because not wasting others' time is a virtue.
 
-### Release 3: Add One Final Feature
+### Release 3: Добавьте один заключительный компонент
 
-One last feature to add: the "this is awesome" feature.  What does awesome
-mean?  It can mean anything.  The code is awesome, there are new awesome
-features, the design is awesome.
+Осталось добавить один заключительный компонент: что-нибудь очень классное! Что это значит? Это может означать что угодно. Новые нестандартные функции, крутой дизайн, оптимизация, встраивание дополнительных технологий.
 
-This isn't a race; there's no finish line, only a deadline (tomorrow, duh!).
-Take the time to make this application something you're proud of.  It doesn't
-have to be flashy &mdash; it could be a difficult technical hurdle you
-overcame.
+Это не гонка; нет финишной прямой, только крайний срок (на завтра, кто бы сомневался!).
+Потратьте время на то, чтобы сделать это приложение таким, чтобы вы смогли им гордиться. Это не обязательно должно быть что-то очень впечетляющее - это может быть технически сложная задача, с которой вы справитесь.
 
-Bring 100% of your best self to this feature.  Make something meaningful; make
-something great.
+Привнесите 100% вашего лучшего «я» в этот компонент. Создайте что-то значимое; сделайте что-то великое.
 
-## Resources
+
+## Ресурсы
 
 * Create, Read, Update, Delete ([CRUD][])
-* [Wikipedia: Wireframe][wireframe]
+* Wireframe ([wireframe][])
 
 [CRUD]: http://en.wikipedia.org/wiki/Create,_read,_update_and_delete
 [wireframe]: http://en.wikipedia.org/wiki/Website_wireframe
