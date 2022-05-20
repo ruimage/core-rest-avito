@@ -82,16 +82,16 @@ routes
 
 Вы можете использовать `index.js` для запросов, которые не относятся к `Category` или к `Article`. Ваша корневая страница `/`, куда ведет ссылка, хорошо подходит для `index.js`
 
-Такой же организационный метод может быть применен к вашим представлениям hbs. Вместо заполнения вашего каталога `views` полдюжиной шаблонов hbs:
+Такой же организационный метод может быть применен к вашим представлениям (React-компонентам). Вместо заполнения вашего каталога `views` полдюжиной React-компонентов:
 
 ```text
 views
-  | - category_index.hbs
-  | - category_show.hbs
-  | - edit_article.hbs
-  | - new_article.hbs
-  | - article_show.hbs
-  | - articles_index.hbs
+  | - CategoryIndex.jsx
+  | - CategoryShow.jsx
+  | - EditArticle.jsx
+  | - NewArticle.jsx
+  | - ArticleShow.jsx
+  | - ArticlesIndex.jsx
 ```
 
 Почему бы не создать подкаталог `articles` и `categories`?
@@ -99,13 +99,13 @@ views
 ```
 views
   | - articles
-    | - edit.hbs
-    | - new.hbs
-    | - show.hbs
-    | - index.hbs
+    | - Edit.jsx
+    | - New.jsx
+    | - Show.jsx
+    | - Articles.jsx
   | - categories
-    | - index.hbs
-    | - show.hbs
+    | - Categories.jsx
+    | - Show.jsx
 ```
 
 
